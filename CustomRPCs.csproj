@@ -19,9 +19,6 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <!-- Path to the Steam folder containing the Knightfall EXE game -->
-    <DevExe>$(UserProfile)\Documents\PC_FIXE\hacking\Knightfall\Steam\$(Product)\Knightfall.exe</DevExe>
-    <PluginRuntimePath>$(DevExe)\..\Mods\</PluginRuntimePath>
     <ModLink>https://github.com/KnightfallModding/CustomRPCs</ModLink>
   </PropertyGroup>
   
@@ -65,18 +62,9 @@
     </Reference>
   </ItemGroup>
 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="taskkill /f /fi &quot;imagename eq $(Product).exe&quot;" />
-  </Target>
-
   <Target Name="BuildCustomFiles" BeforeTargets="Build">
     <!-- Mimic BepInEx.PluginInfoProps -->
     <WriteLinesToFile Overwrite="true" File="ModInfo.cs" Lines="namespace $(Product)%3B&#xD;&#xA;&#xD;&#xA;public static class ModInfo&#xD;&#xA;{&#xD;&#xA;  public const string MOD_NAME = &quot;$(Product)&quot;%3B&#xD;&#xA;  public const string MOD_GUID = &quot;$(AssemblyName)&quot;%3B&#xD;&#xA;  public const string MOD_VERSION = &quot;$(Version)&quot;%3B&#xD;&#xA;  public const string MOD_AUTHOR = &quot;$(Author)&quot;%3B&#xD;&#xA;  public const string MOD_LINK = &quot;$(ModLink)&quot;%3B&#xD;&#xA;}&#xD;&#xA;" />
   </Target>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <!-- Copy DLL and run modded game -->
-    <Exec Command="copy &quot;$(TargetPath)&quot; &quot;$(PluginRuntimePath)\&quot;" />
-	  <Exec Command="&quot;$(DevExe)&quot;" />
-  </Target>
 </Project>
