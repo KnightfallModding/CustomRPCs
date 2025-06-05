@@ -6,10 +6,21 @@ Short answer: Il2Cpp.
 
 Long answer:
 
-We can't use the built-in [PunRPC] Attribute to define our methods as valid RPCs in Photon.
-This is due to Il2Cpp handling [PunRPC] as `Il2CppSystem.Attribute`, which is not a valid `System.Attribute` that can be used on methods anymore.
+Classic Mono syntax to declare an RPC method:
 
-To counter this, we create a custom Attribute [CustomRPC] and we hook into the Photon logic flow to add our `RPCA_` methods as valid PunRPC methods.
+```C#
+[PunRPC]
+public void RPCA_StartGame()
+{
+    ...
+}
+```
+
+With Il2Cpp, we can't use the [PunRPC] Attribute to define our methods as valid RPCs in Photon.
+This is due to Il2Cpp handling [PunRPC] as `Il2CppSystem.Attribute`, which is not a valid `System.Attribute` that can be applied to methods anymore.
+
+To counter this, we create a custom Attribute [CustomRPC].  
+Then, we hook into the Photon logic flow to register our custom `RPCA_` methods as valid PunRPC methods.
 
 ## Development
 
@@ -50,7 +61,7 @@ The following example creates a [CustomRPC] method `RPCA_SetScale(float scale)` 
 
 Note that the `ScalingTool` component MUST be added **client-side** on all Player views for the RPCA to work.  
 This is done through the `ComponentAdder` patch.
-  
+
 Since `ScalingTool` is a custom class, it MUST include the [RegisterTypeInIl2Cpp] attribute before using `AddComponent<>()`
 
 For demo purposes, you can trigger a random scale change on your player by pressing the `H` key.
@@ -104,7 +115,7 @@ public static class ComponentAdder
     /// <summary>
     /// Add our custom Pun component to all players.
     /// Using a patch ensures that players are actually
-    /// defined defined at the time we add the component(s).
+    /// defined at the time we add the component(s).
     /// </summary>
     /// <param name="__instance"></param>
     [HarmonyPatch(typeof(Player), nameof(Player.Start))]
