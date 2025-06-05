@@ -16,7 +16,7 @@ public void RPCA_StartGame()
 }
 ```
 
-With Il2Cpp, we can't use the [PunRPC] Attribute to define our methods as valid RPCs in Photon.
+With Il2Cpp, we can't use the [PunRPC] Attribute to define our methods as valid RPCs in Photon.  
 This is due to Il2Cpp handling [PunRPC] as `Il2CppSystem.Attribute`, which is not a valid `System.Attribute` that can be applied to methods anymore.
 
 To counter this, we create a custom Attribute [CustomRPC].  
