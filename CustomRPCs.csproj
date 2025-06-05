@@ -1,0 +1,82 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <AssemblyName>t1nquen.knightfall.customrpc</AssemblyName>
+    <Product>CustomRPCs</Product>
+    <Version>1.0.0</Version>
+    <Author>t1nquen</Author>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
+    <RestoreAdditionalProjectSources>
+      https://api.nuget.org/v3/index.json;
+      https://nuget.bepinex.dev/v3/index.json;
+      https://nuget.samboy.dev/v3/index.json
+    </RestoreAdditionalProjectSources>
+    <RootNamespace>CustomRPCs</RootNamespace>
+    <!-- DLL output name -->
+    <TargetName>$(Product)</TargetName> 
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Path to the Steam folder containing the Knightfall EXE game -->
+    <DevExe>$(UserProfile)\Documents\PC_FIXE\hacking\Knightfall\Steam\$(Product)\Knightfall.exe</DevExe>
+    <PluginRuntimePath>$(DevExe)\..\Mods\</PluginRuntimePath>
+    <ModLink>https://github.com/KnightfallModding/CustomRPCs</ModLink>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="LavaGang.MelonLoader" Version="0.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Add game Libs -->
+    <Reference Include="Assembly-CSharp">
+      <HintPath>src\Libs\Assembly-CSharp.dll</HintPath>
+    </Reference>
+
+    <!-- Add utils -->
+    <Reference Include="Il2cppmscorlib">
+      <HintPath>src\Libs\Il2cppmscorlib.dll</HintPath>
+    </Reference>
+
+    <!-- Add Unity's core modules -->
+    <Reference Include="UnityEngine">
+      <HintPath>src\Libs\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>src\Libs\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+
+    <!-- Add networking modules -->
+    <Reference Include="Il2CppPhoton3Unity3D">
+      <HintPath>src\Libs\Il2CppPhoton3Unity3D.dll</HintPath>
+    </Reference>
+    <Reference Include="Il2CppPhotonUnityNetworking">
+      <HintPath>src\Libs\Il2CppPhotonUnityNetworking.dll</HintPath>
+    </Reference>
+  
+    <!-- Add MelonLoader modules -->
+    <Reference Include="Il2CppInterop.Runtime">
+      <HintPath>src\Libs\Il2CppInterop.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Harmony">
+      <HintPath>src\Libs\0Harmony.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="taskkill /f /fi &quot;imagename eq $(Product).exe&quot;" />
+  </Target>
+
+  <Target Name="BuildCustomFiles" BeforeTargets="Build">
+    <!-- Mimic BepInEx.PluginInfoProps -->
+    <WriteLinesToFile Overwrite="true" File="ModInfo.cs" Lines="namespace $(Product)%3B&#xD;&#xA;&#xD;&#xA;public static class ModInfo&#xD;&#xA;{&#xD;&#xA;  public const string MOD_NAME = &quot;$(Product)&quot;%3B&#xD;&#xA;  public const string MOD_GUID = &quot;$(AssemblyName)&quot;%3B&#xD;&#xA;  public const string MOD_VERSION = &quot;$(Version)&quot;%3B&#xD;&#xA;  public const string MOD_AUTHOR = &quot;$(Author)&quot;%3B&#xD;&#xA;  public const string MOD_LINK = &quot;$(ModLink)&quot;%3B&#xD;&#xA;}&#xD;&#xA;" />
+  </Target>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <!-- Copy DLL and run modded game -->
+    <Exec Command="copy &quot;$(TargetPath)&quot; &quot;$(PluginRuntimePath)\&quot;" />
+	  <Exec Command="&quot;$(DevExe)&quot;" />
+  </Target>
+</Project>
