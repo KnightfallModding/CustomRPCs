@@ -59,11 +59,6 @@ Assembly: CustomRPCs.dll
 
 The following example creates a [CustomRPC] method `RPCA_SetScale(float scale)` allowing to change the size of a player on network.  
 
-Note that the `ScalingTool` component MUST be added **client-side** on all Player views for the RPCA to work.  
-This is done through the `ComponentAdder` patch.
-
-Since `ScalingTool` is a custom class, it MUST include the [RegisterTypeInIl2Cpp] attribute before using `AddComponent<>()`
-
 For demo purposes, you can trigger a random scale change on your player by pressing the `H` key.
 
 ```C#
@@ -126,3 +121,8 @@ public static class ComponentAdder
     }
 }
 ```
+
+Note that the `ScalingTool` component MUST be added **client-side** on all Player views for the RPCA to work.  
+This is done through the `ComponentAdder` patch.
+
+Since `ScalingTool` is a custom class, it MUST include the [RegisterTypeInIl2Cpp] attribute before using `AddComponent<>()`.
